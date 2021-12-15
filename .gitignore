@@ -1,0 +1,40 @@
+# data files
+/data/*
+!/data/blank
+
+!/data/credential
+/data/credential/*
+!/data/credential/blank
+
+!/data/model
+/data/model/*
+!/data/model/blank
+
+!/data/model/param
+/data/model/param/*
+!/data/model/param/blank
+
+!/data/numerai
+/data/numerai/*
+!/data/numerai/blank
+
+!/data/numerai_test
+/data/numerai_test/*
+!/data/numerai_test/blank
+
+!/data/log
+/data/log/*
+!/data/log/blank
+
+# misc
+**/__pycache__
+**.pyc
+.DS_*
+.vscode
+
+# lock file
+Pipfile.lock
+
+
+catboost_info
+

@@ -1,0 +1,6 @@
+.numerai
+.git
+data/numerai.zip
+data/numerai/*
+
+catboost_info
