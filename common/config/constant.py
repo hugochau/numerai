@@ -79,8 +79,11 @@ DFILES = {
 
 
 AWS_REGION = 'us-east-1'
+S3_BUCKET = 'numerai-model-staging'
 
 ERA_COL = "era"
 TARGET_COL = "target_nomi_20"
 DATA_TYPE_COL = "data_type"
 FEATURE_SIZE = 'medium'
+
+MACHINE_TYPE = 'CPU'

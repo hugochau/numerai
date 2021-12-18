@@ -7,9 +7,11 @@ Defines load_model
 __author__ = "Julien Lefebvre, Hugo Chauvary"
 __email__ = 'numerai_2021@protonmail.com'
 
+import re
+
 from common.module.aws import S3
-# from common.module.model import *
 from common.module.logger import Logger
+from common.config.constant import S3_BUCKET
 
 
 def load_model(model_name: str):
@@ -30,9 +32,11 @@ def load_model(model_name: str):
 
     # check if there is a corresponding file for designated model
     for file in files:
-        if file['Key'].split('_')[0] == model_name:
+        # if file['Key'].split('_')[0] == model_name:
+        if re.search(f'^{model_name}.*', file['Key']):
             logger.info(f"Downloading {file['Key']}")
-            sss.download_file(file['Key'], 'numerai-model')
+            filename = file['Key']
+            sss.download_file(file['Key'], S3_BUCKET)
 
             # algo = file['Key'].split('_')[1].split('.')[0]
             # algo = algo[0].upper() + algo[1:]
@@ -40,3 +44,4 @@ def load_model(model_name: str):
             # model = eval(algo)(None, None, True, file['Key'])
 
     # return model
+    return filename

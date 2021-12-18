@@ -28,10 +28,10 @@ class Parser:
         parser = argparse.ArgumentParser(description=description)
 
         # add arguments
-        parser.add_argument('model',
-                            help='the model to load/train')
-        parser.add_argument('data',
-                            help='the data type to load: legacy/new')
+        # parser.add_argument('model',
+        #                     help='the model to load/train')
+        # parser.add_argument('data',
+        #                     help='the data type to load: legacy/new')
         parser.add_argument('--test',
                            required=False,
                            action='store_const',

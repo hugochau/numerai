@@ -42,7 +42,8 @@ class Data:
     @property
     def ids(self):
         "Copy of ids as a numpy str array"
-        return self.df.index.values.astype('str')
+        # return self.df.index.values.astype('str')
+        return self.df.iloc[:, 0].values
 
 
     # x
@@ -51,7 +52,7 @@ class Data:
         """
         View of features, x, as a numpy float array"
         """
-        return self.df.iloc[:, 2:-1].values
+        return self.df.iloc[:, 3:-1].values
 
     # y
     @property
@@ -221,7 +222,7 @@ class Data:
 
     @staticmethod
     @log_item
-    def load_csv(type: str, test: str, single_precision: bool = True):
+    def load_csv(type: str, test: str, single_precision: bool = False):
         """
         Load numerai dataset.
 
@@ -248,6 +249,12 @@ class Data:
             #                     nrows=2000,
             #                     dtype=float32_cols)
 
+            # df = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/numerai_{type}_data.csv',
+            #                     header=0,
+            #                     index_col=0,
+            #                     engine='c',
+            #                     dtype=float32_cols)
+
             df = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/numerai_{type}_data.csv',
                                 header=0,
                                 index_col=0,
@@ -268,9 +275,17 @@ class Data:
             #     df = train
         else:
             # regular parsing, float64 will be used
-            df = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/numerai_{type}_data.csv',
-                                header=0,
-                                index_col=0)
+            # df = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/numerai_{type}_data.csv',
+            #                     header=0,
+            #                     index_col=0)
+
+            tp = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/numerai_{type}_data.csv',
+                             iterator=True,
+                             chunksize=10000,
+                             low_memory=True,
+                             engine='c',)
+
+            df = pd.concat(tp, ignore_index=True)
 
             # if include_tournament:
             #     tourn = pd.read_csv(TOURNAMENT_FILE,
@@ -281,44 +296,44 @@ class Data:
             # else:
             #     df = train
 
-        # rename columns
-        rename_map = {'data_type': 'region'}
-        # intelligence
-        for i in range(1, N_FEATURES_INTEL + 1):
-            rename_map['feature_intelligence' + str(i)] = 'i' + str(i)
-        # charisma
-        for i in range(1, N_FEATURES_CHARI + 1):
-            rename_map['feature_charisma' + str(i)] = 'c' + str(i)
-        # strength
-        for i in range(1, N_FEATURES_STREN + 1):
-            rename_map['feature_strength' + str(i)] = 's' + str(i)
-        # dexterity
-        for i in range(1, N_FEATURES_DEXT + 1):
-            rename_map['feature_dexterity' + str(i)] = 'd' + str(i)
-        # constitution
-        for i in range(1, N_FEATURES_CONST + 1):
-            rename_map['feature_constitution' + str(i)] = 'p' + str(i)
-        # wisdom
-        for i in range(1, N_FEATURES_WISDO + 1):
-            rename_map['feature_wisdom' + str(i)] = 'w' + str(i)
+        # # rename columns
+        # rename_map = {'data_type': 'region'}
+        # # intelligence
+        # for i in range(1, N_FEATURES_INTEL + 1):
+        #     rename_map['feature_intelligence' + str(i)] = 'i' + str(i)
+        # # charisma
+        # for i in range(1, N_FEATURES_CHARI + 1):
+        #     rename_map['feature_charisma' + str(i)] = 'c' + str(i)
+        # # strength
+        # for i in range(1, N_FEATURES_STREN + 1):
+        #     rename_map['feature_strength' + str(i)] = 's' + str(i)
+        # # dexterity
+        # for i in range(1, N_FEATURES_DEXT + 1):
+        #     rename_map['feature_dexterity' + str(i)] = 'd' + str(i)
+        # # constitution
+        # for i in range(1, N_FEATURES_CONST + 1):
+        #     rename_map['feature_constitution' + str(i)] = 'p' + str(i)
+        # # wisdom
+        # for i in range(1, N_FEATURES_WISDO + 1):
+        #     rename_map['feature_wisdom' + str(i)] = 'w' + str(i)
 
-        df.rename(columns=rename_map, inplace=True)
+        # df.rename(columns=rename_map, inplace=True)
 
         # convert era, region, and labels to np.float32 or np.float64 depending on the mode
-        df['era'] = df['era'].map(ERA_STR_TO_FLOAT)
-        df['region'] = df['region'].map(REGION_STR_TO_FLOAT)
+        # df['era'] = df['era'].map(ERA_STR_TO_FLOAT)
+        # df['region'] = df['region'].map(REGION_STR_TO_FLOAT)
 
-        if single_precision:
-            df.iloc[:, 0:2] = df.iloc[:, 0:2].astype('float32')
-        else:
-            df.iloc[:, 0:2] = df.iloc[:, 0:2].astype('float64')
+        # if single_precision:
+        #     df.iloc[:, 0:2] = df.iloc[:, 0:2].astype('float32')
+        # else:
+        #     df.iloc[:, 0:2] = df.iloc[:, 0:2].astype('float64')
 
-        # # make sure memory is contiguous so that, e.g., data.x is a view
-        df = df.copy()
+        # make sure memory is contiguous so that, e.g., data.x is a view
+        # df = df.copy()
 
-        # to avoid copies we need the dtype of each column to be the same
-        if df.dtypes.unique().size != 1:
-            raise TypeError("dtype of each column should be the same")
+        # # to avoid copies we need the dtype of each column to be the same
+        # if df.dtypes.unique().size != 1:
+        #     raise TypeError("dtype of each column should be the same")
 
         return Data(df)
 
@@ -344,7 +359,7 @@ class Data:
         features = feature_metadata["feature_sets"][FEATURE_SIZE]
 
         # read in just those features along with era and target columns
-        read_columns = features + [TARGET_COL]
+        read_columns = ['id', ERA_COL, DATA_TYPE_COL] + features + [TARGET_COL]
 
         df = pd.read_parquet(f'{DATA_FOLDER}/numerai{test}/numerai_{type}_data_int8.parquet',
                              columns=read_columns)
@@ -356,14 +371,14 @@ class Data:
             every_4th_era = df[ERA_COL].unique()[::4]
             df = df[df[ERA_COL].isin(every_4th_era)]
 
+        # df.drop([ERA_COL], axis=1)
+
         # columns = [c for c in df.columns if
         #     c.startswith("feature_")
         #     or c == 'target_nomi_20'
         # ]
 
-        # df.drop([ERA_COL], axis=1)
-
-        return Data(df)
+        return Data(df.reset_index())
 
 
     @staticmethod

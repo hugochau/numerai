@@ -10,7 +10,7 @@ __email__ = 'numerai_2021@protonmail.com'
 from botocore.exceptions import ClientError
 
 from common.module.aws.client import Client
-from common.config.constant import AWS_REGION, DATA_FOLDER
+from common.config.constant import AWS_REGION, DATA_FOLDER, S3_BUCKET
 
 
 class S3:
@@ -20,7 +20,7 @@ class S3:
 
     def upload_file(self,
                     file_name: str,
-                    bucket_name: str = 'numerai-model') -> dict:
+                    bucket_name: str = S3_BUCKET) -> dict:
         """
         Upload a file to an S3 bucket
 
@@ -64,7 +64,7 @@ class S3:
             raise e
 
 
-    def list_files(self, bucket_name: str = 'numerai-model') -> list:
+    def list_files(self, bucket_name: str = S3_BUCKET) -> list:
         """
         List files in S3 bucket
 

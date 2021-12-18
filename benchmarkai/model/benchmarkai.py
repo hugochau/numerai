@@ -12,22 +12,22 @@ from catboost import CatBoostClassifier as cat
 import numpy as np
 import joblib
 
-from common.config.constant import DATA_FOLDER
+from common.config.constant import DATA_FOLDER, MACHINE_TYPE
 from common.module.model.model import Model
 from common.module.splitter import Splitter
 from common.util.read_param import read_param
 
 
 class Benchmarkai(Model):
-    def __init__(self, X, y, pre_trained=False, filename=None):
+    def __init__(self, X, y, pre_trained=False):
         # trained model as class attribute
-        self.model = self.fit(X, y, pre_trained, filename)
+        self.model = self.fit(X, y, pre_trained)
 
 
-    def fit(self, X, y, pre_trained, filename):
+    def fit(self, X, y, pre_trained):
         # if pre_trained load model from joblib file
         if pre_trained:
-            model = joblib.load(f'{DATA_FOLDER}/model/{filename}')
+            model = joblib.load(f'{DATA_FOLDER}/model/{type(self).__name__.lower()}.joblib')
             return model
 
         # split training dataset
@@ -37,16 +37,9 @@ class Benchmarkai(Model):
         weights = np.asarray(1 - counts/len(y_train))
 
         # define the CatBoostClassifier model
-        # params = read_param(type(self).__name__)
-        # catt = cat(**params)
-        catt = cat(eval_metric='MultiClass',
-                   iterations=3500,
-                   task_type="CPU",
-                   devices='0:1',
-                   depth=7,
-                   learning_rate=.01,
-                   class_weights=weights,
-                   thread_count=-1)
+        print(type(self).__name__)
+        params = read_param(type(self).__name__.lower())
+        catt = cat(class_weights=weights, task_type=MACHINE_TYPE, **params)
 
         # fit model
         estimator = catt.fit(X_train,
