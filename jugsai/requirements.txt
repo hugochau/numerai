@@ -1,0 +1,10 @@
+numerai-cli
+numerapi
+pandas
+scikit-learn
+joblib
+pyarrow
+ipywidgets
+boto3
+catboost
+lightgbm

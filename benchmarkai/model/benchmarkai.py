@@ -37,7 +37,6 @@ class Benchmarkai(Model):
         weights = np.asarray(1 - counts/len(y_train))
 
         # define the CatBoostClassifier model
-        print(type(self).__name__)
         params = read_param(type(self).__name__.lower())
         catt = cat(class_weights=weights, task_type=MACHINE_TYPE, **params)
 

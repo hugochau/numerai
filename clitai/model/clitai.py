@@ -19,18 +19,18 @@ from common.util.read_param import read_param
 
 
 class Clitai(Model):
-    def __init__(self, X, y, pre_trained=False, filename=None):
+    def __init__(self, X, y, pre_trained=False):
         # trained model as class attribute
-        self.model = self.fit(X, y, pre_trained, filename)
+        self.model = self.fit(X, y, pre_trained)
 
 
-    def fit(self, X, y, pre_trained, filename):
+    def fit(self, X, y, pre_trained):
         if pre_trained:
-            model = joblib.load(f'{DATA_FOLDER}/model/{filename}')
+            model = joblib.load(f'{DATA_FOLDER}/model/{type(self).__name__.lower()}.joblib')
             return model
 
         # fetch parameters/initialize model
-        params = read_param(type(self).__name__)
+        params = read_param(type(self).__name__.lower())
         model = LGBMRegressor(**params)
 
         (X_train, X_test, y_train, y_test) = Splitter.split(X, y)

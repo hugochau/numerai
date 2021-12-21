@@ -2,5 +2,6 @@
 .git
 data/numerai.zip
 data/numerai/*
+data/numerai_test/*
 
 catboost_info

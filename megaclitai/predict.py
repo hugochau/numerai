@@ -19,7 +19,7 @@ from common.module import Parser, Api, Data, Prediction
 from common.module.logger import Logger
 from common.module.api import Api
 from common.util.load_model import load_model
-from model.destroyai import Destroyai
+from model.megaclitai import MegaClitai
 
 
 def main():
@@ -32,24 +32,23 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'destroyai'
-    datatype = 'legacy'
+    modelname = 'megaclitai'
 
     # download current training datasets
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download tournament dataset")
-        napi.download_dataset()
+        napi.download_new_dataset('tournament')
         
     # load data
     logger.info(f"Read tournament data")
-    dtour = Data.load_csv('tournament', args.test)
+    dtour = Data.load_parquet('tournament', args.test)
     dtour.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtour.df.shape} tournament")
 
     # load model from s3
     load_model(modelname)
-    model = Destroyai(None, None, True)
+    model = MegaClitai(None, None, True)
 
     # compute predictions
     logger.info(f"Compute predictions")
@@ -62,8 +61,8 @@ def main():
     logger.info(f"Save predictions")
     Prediction(ids, yhat).save()
 
-    logger.info(f"Upload predictions")
-    napi.upload_predictions(modelname, datatype)
+    # logger.info(f"Upload predictions")
+    # napi.upload_predictions(modelname, args.data)
 
 
 if __name__ == '__main__':

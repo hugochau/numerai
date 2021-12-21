@@ -1,4 +1,8 @@
-# python init.py
+# do check
+# common.config.constant
+#   - S3_BUCKET
+#   - MACHINE_TYPE
+# Dockerfile
+#   - path_to_folder
 
-# python clitai/train.py clitai_lgbmRegre legacy --test
-python clitai/predict.py clitai legacy --test
+python felinai/predict.py

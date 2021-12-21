@@ -19,7 +19,7 @@ from common.module import Parser, Api, Data, Prediction
 from common.module.logger import Logger
 from common.module.api import Api
 from common.util.load_model import load_model
-from model.destroyai import Destroyai
+from model.fellonai import Fellonai
 
 
 def main():
@@ -32,7 +32,7 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'destroyai'
+    modelname = 'fellonai'
     datatype = 'legacy'
 
     # download current training datasets
@@ -49,7 +49,7 @@ def main():
 
     # load model from s3
     load_model(modelname)
-    model = Destroyai(None, None, True)
+    model = Fellonai(None, None, True)
 
     # compute predictions
     logger.info(f"Compute predictions")

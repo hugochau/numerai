@@ -18,7 +18,7 @@ from common.module import Parser, Api, Data
 from common.module.aws import S3
 from common.module.logger import Logger
 from common.util.save_model import save_model
-from model.benchmarkai import Benchmarkai
+from model.fellonai import Fellonai
 
 
 def main():
@@ -30,7 +30,7 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'benchmarkai'
+    modelname = 'fellonai'
     logger.info(f"Selected model:{modelname}")
 
     # download current training datasets
@@ -47,7 +47,7 @@ def main():
 
     # train model
     logger.info(f"Training model")
-    model = Benchmarkai(dtrain.x, dtrain.y)
+    model = Fellonai(dtrain.x, dtrain.y)
 
     # free up memory
     del dtrain
@@ -55,7 +55,7 @@ def main():
     # save and upload model to s3
     logger.info(f"Save and upload model")
     save_model(model.model, modelname)
-    # S3().upload_file(modelname)
+    S3().upload_file(modelname)
 
 
 if __name__ == '__main__':

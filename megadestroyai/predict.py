@@ -19,7 +19,7 @@ from common.module import Parser, Api, Data, Prediction
 from common.module.logger import Logger
 from common.module.api import Api
 from common.util.load_model import load_model
-from model.destroyai import Destroyai
+from model.megadestroyai import MegaDestroyai
 
 
 def main():
@@ -32,14 +32,14 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'destroyai'
-    datatype = 'legacy'
+    modelname = 'megadestroyai'
+    datatype = 'new'
 
     # download current training datasets
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download tournament dataset")
-        napi.download_dataset()
+        napi.download_new_dataset('tournament')
         
     # load data
     logger.info(f"Read tournament data")
@@ -49,7 +49,7 @@ def main():
 
     # load model from s3
     load_model(modelname)
-    model = Destroyai(None, None, True)
+    model = MegaDestroyai(None, None, True)
 
     # compute predictions
     logger.info(f"Compute predictions")

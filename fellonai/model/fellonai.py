@@ -17,7 +17,7 @@ from common.module.splitter import Splitter
 from common.util.read_param import read_param
 
 
-class Felinai(Model):
+class Fellonai(Model):
     def __init__(self, X, y, pre_trained=False):
         # trained model as class attribute
         self.model = self.fit(X, y, pre_trained)

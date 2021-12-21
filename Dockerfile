@@ -2,7 +2,7 @@
 FROM python:3.7-slim-buster
 
 WORKDIR /numerai
-ADD ./benchmarkai/requirements.txt /numerai/requirements.txt
+ADD ./felinai/requirements.txt /numerai/requirements.txt
 
 RUN set -ex \
     && apt-get update \

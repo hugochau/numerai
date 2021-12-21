@@ -33,13 +33,14 @@ def main():
     # parse CLI arg
     args = Parser.parse()
     modelname = 'benchmarkai'
+    datatype = 'legacy'
 
     # download current training datasets
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download tournament dataset")
         napi.download_dataset()
-        
+
     # load data
     logger.info(f"Read tournament data")
     dtour = Data.load_csv('tournament', args.test)
@@ -61,8 +62,8 @@ def main():
     logger.info(f"Save predictions")
     Prediction(ids, yhat).save()
 
-    # logger.info(f"Upload predictions")
-    # napi.upload_predictions(modelname, args.data)
+    logger.info(f"Upload predictions")
+    napi.upload_predictions(modelname, datatype)
 
     # upload predictions/diagnostic
     # if args.data == 'new':

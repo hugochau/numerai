@@ -18,7 +18,7 @@ from common.module import Parser, Api, Data
 from common.module.aws import S3
 from common.module.logger import Logger
 from common.util.save_model import save_model
-from model.benchmarkai import Benchmarkai
+from model.megaclitai import MegaClitai
 
 
 def main():
@@ -30,24 +30,24 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'benchmarkai'
+    modelname = 'megaclitai'
     logger.info(f"Selected model:{modelname}")
 
     # download current training datasets
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download training datasets")
-        Api().download_dataset()
+        Api().napi.download_new_dataset('training')
 
     # load training data
     logger.info(f"Read training data")
-    dtrain = Data.load_csv('training', args.test)
+    dtrain = Data.load_parquet('training', args.test)
     dtrain.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtrain.df.shape} training")
 
     # train model
     logger.info(f"Training model")
-    model = Benchmarkai(dtrain.x, dtrain.y)
+    model = MegaClitai(dtrain.x, dtrain.y)
 
     # free up memory
     del dtrain
@@ -55,7 +55,7 @@ def main():
     # save and upload model to s3
     logger.info(f"Save and upload model")
     save_model(model.model, modelname)
-    # S3().upload_file(modelname)
+    S3().upload_file(modelname)
 
 
 if __name__ == '__main__':
