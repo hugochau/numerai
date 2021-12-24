@@ -41,7 +41,7 @@ def main():
 
     # load training data
     logger.info(f"Read training data")
-    dtrain = Data.load_csv('training', args.test)
+    dtrain = Data.load_parquet('training', args.test)
     dtrain.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtrain.df.shape} training")
 

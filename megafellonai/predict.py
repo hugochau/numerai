@@ -43,7 +43,7 @@ def main():
         
     # load data
     logger.info(f"Read tournament data")
-    dtour = Data.load_csv('tournament', args.test)
+    dtour = Data.load_parquet('tournament', args.test)
     dtour.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtour.df.shape} tournament")
 
