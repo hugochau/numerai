@@ -37,7 +37,7 @@ def main():
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download training datasets")
-        Api().napi.download_dataset()
+        Api().download_dataset()
 
     # load training data
     logger.info(f"Read training data")

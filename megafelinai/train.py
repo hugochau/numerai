@@ -18,7 +18,7 @@ from common.module import Parser, Api, Data
 from common.module.aws import S3
 from common.module.logger import Logger
 from common.util.save_model import save_model
-from model.megabenchmarkai import MegaBenchmarkai
+from model.megafelinai import MegaFelinai
 
 
 def main():
@@ -30,14 +30,14 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'megabenchmarkai'
+    modelname = 'megafelinai'
     logger.info(f"Selected model:{modelname}")
 
     # download current training datasets
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download training datasets")
-        Api().download_new_dataset('training')
+        Api().download_dataset()
 
     # load training data
     logger.info(f"Read training data")
@@ -47,7 +47,7 @@ def main():
 
     # train model
     logger.info(f"Training model")
-    model = MegaBenchmarkai(dtrain.x, dtrain.y)
+    model = MegaFelinai(dtrain.x, dtrain.y)
 
     # free up memory
     del dtrain

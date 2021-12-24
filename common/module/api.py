@@ -97,7 +97,8 @@ class Api:
             - data_type: configures upload_predictions.version attribute
         """
         version = {
-            'legacy': 1
+            'legacy': 1,
+            'new': 2
         }
 
         self.api.upload_predictions(f"{DATA_FOLDER}/predictions.csv",
@@ -114,9 +115,6 @@ class Api:
             - model_name: model name as seen on numerai
             - data_type: configures upload_predictions.version attribute
         """
-        version = {
-            'legacy': 1
-        }
 
         self.api.upload_diagnostics(f"{DATA_FOLDER}/predictions.csv",
                                     model_id=get_model_id(model_name))

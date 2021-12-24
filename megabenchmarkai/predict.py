@@ -19,7 +19,7 @@ from common.module import Parser, Api, Data, Prediction
 from common.module.logger import Logger
 from common.module.api import Api
 from common.util.load_model import load_model
-from model.megadestroyai import MegaDestroyai
+from model.megabenchmarkai import MegaBenchmarkai
 
 
 def main():
@@ -49,7 +49,7 @@ def main():
 
     # load model from s3
     load_model(modelname)
-    model = MegaDestroyai(None, None, True)
+    model = MegaBenchmarkai(None, None, True)
 
     # compute predictions
     logger.info(f"Compute predictions")

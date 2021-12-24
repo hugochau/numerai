@@ -19,7 +19,7 @@ from common.module import Parser, Api, Data, Prediction
 from common.module.logger import Logger
 from common.module.api import Api
 from common.util.load_model import load_model
-from model.megaclitai import MegaClitai
+from model.megafellonai import MegaFellonai
 
 
 def main():
@@ -32,24 +32,24 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'megaclitai'
+    modelname = 'megafellonai'
     datatype = 'new'
 
     # download current training datasets
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download tournament dataset")
-        napi.download_new_dataset('tournament')
+        napi.download_dataset()
         
     # load data
     logger.info(f"Read tournament data")
-    dtour = Data.load_parquet('tournament', args.test)
+    dtour = Data.load_csv('tournament', args.test)
     dtour.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtour.df.shape} tournament")
 
     # load model from s3
     load_model(modelname)
-    model = MegaClitai(None, None, True)
+    model = MegaFellonai(None, None, True)
 
     # compute predictions
     logger.info(f"Compute predictions")

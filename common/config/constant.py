@@ -72,7 +72,6 @@ DFILES = {
     },
     'training': {
         'numerai_training_data_int8.parquet',
-        'numerai_validation_data_int8.parquet',
         'features.json'
     }
 }
