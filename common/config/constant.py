@@ -78,7 +78,7 @@ DFILES = {
 
 
 AWS_REGION = 'us-east-1'
-S3_BUCKET = 'numerai-model-staging'
+S3_BUCKET = 'numerai-model'
 
 ERA_COL = "era"
 TARGET_COL = "target_nomi_20"

@@ -1,7 +1,9 @@
 .numerai
 .git
 data/numerai.zip
+data/predictions.csv
 data/numerai/*
 data/numerai_test/*
+data/model/*.joblib
 
 catboost_info
