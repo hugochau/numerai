@@ -32,7 +32,7 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'megadestroyai'
+    modelname = 'megabenchmarkai'
     datatype = 'new'
 
     # download current training datasets
