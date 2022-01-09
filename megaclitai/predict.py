@@ -11,6 +11,8 @@ import os
 import sys
 import inspect
 
+# add root directory to python path
+# thus we can import ./common modules
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
