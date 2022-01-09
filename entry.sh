@@ -1,8 +1,11 @@
 # do check
 # common.config.constant
-#   - S3_BUCKET
-#   - MACHINE_TYPE
+#   - S3_BUCKET: point to numerai
 # Dockerfile
-#   - path_to_folder
+#   - update path_to_folder
 
-python felinai/predict.py
+# adapt to your model
+# python model_name/predict.py
+# can be also model_name/tits.py
+# as long as it computes and submits predictions!
+python megabenchmarkai/predict.py
