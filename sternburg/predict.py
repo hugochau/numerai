@@ -139,8 +139,8 @@ def main():
 
     # upload signal data
     logger.info(f"Uploading")
-    # napi.upload_predictions(signal_filepath,
-    #                         model_id=get_model_id('sternburg'))
+    napi.upload_predictions(signal_filepath,
+                            model_id=get_model_id('sternburg'))
 
     logger.info(f"Success!")
 

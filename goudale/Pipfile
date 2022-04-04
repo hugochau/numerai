@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+numerai-cli = "*"
+numerapi = "*"
+pandas = "*"
+scikit-learn = "*"
+joblib = "*"
+boto3 = "*"
+catboost = "*"
+numpy = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.7"

@@ -16,13 +16,21 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 
-from common.module import SignalApi, Splitter # Api
 from common.module.logger import Logger
-from common.config.constant import SIGNAL_TRAIN_DATA, MACHINE_TYPE
+from common.module import Splitter
+from common.config.constant import (
+    SIGNAL_TRAIN_DATA,
+    DATA_FOLDER,
+    SECRET_KEY,
+    PUBLIC_ID,
+    MACHINE_TYPE
+)
 
+from common.util.get_model_id import get_model_id
+
+import numerapi
 import pandas as pd
 from catboost import CatBoostRegressor as cat
-from sklearn.preprocessing import LabelEncoder
 from datetime import datetime
 from dateutil.relativedelta import relativedelta, FR
 
@@ -32,12 +40,13 @@ def main():
     """
     logger = Logger().logger
     logger.info(f"Begin script")
-    napi = SignalApi()
+    napi = numerapi.SignalsAPI(secret_key=SECRET_KEY,
+                               public_id=PUBLIC_ID)
 
     # read latest signal dataset
     # be it from numerai's repository or file
     # df_numerai = pd.read_csv(SIGNAL_TRAIN_DATA)
-    df_numerai = pd.read_csv(f'sternburg/signals_train_val_bbg.csv')
+    df_numerai = pd.read_csv(f"{DATA_FOLDER}/signal/signals_train_val_bbg.csv")
 
     # quick operations
     # friday_date to %Y%m%d format
@@ -54,15 +63,17 @@ def main():
         .size()\
         .reset_index()
 
-    # # columns = ['friday_date', 'short_ticker', 'data_type', 'target_20d']
-    # # df_numerai = df_numerai[columns]
-
     # read latest training data
-    df_signal = pd.read_csv(f'sternburg/updated_training.csv')
+    df_signal = pd.read_csv(f"{DATA_FOLDER}/signal/updated_training.csv")
 
     # quick transformation on friday_date
-    df_signal = df_signal.rename(columns={"date": "friday_date", "symbol": "short_ticker"})
-    df_signal['friday_date'] = pd.to_datetime(df_signal['friday_date'], format='%Y-%m-%d')  
+    columns = {
+        "date": "friday_date",
+        "symbol": "short_ticker"
+    }
+    df_signal = df_signal.rename(columns=columns)
+    df_signal['friday_date'] = pd.to_datetime(df_signal['friday_date'],
+                                              format='%Y-%m-%d')
 
     logger.info(f"Home data latest friday: {df_signal.friday_date.max()}")
 
@@ -72,25 +83,16 @@ def main():
                   on=['friday_date','short_ticker'])\
         .set_index('friday_date')
 
-    # encode categorical attributes
-    # labelencoder = LabelEncoder()
-    # df['encoded_ticker'] = labelencoder.fit_transform(df['short_ticker'])
-
-    # # persist encoded ticker in ticker table
-    # df_tickers = pd.merge(df_tickers,
-    #                       df.groupby(['short_ticker', 'encoded_ticker'])\
-    #                         .size()\
-    #                         .reset_index(),
-    #                       on=['short_ticker'])
+    # drop na
+    df = df.dropna(subset=['target_20d'])
 
     # select feature names
     features = df_signal.filter(like='FEATURE_').columns.to_list()
-    # features.extend(['encoded_ticker'])
 
     # fit lightGBM model
     params = {
         "thread_count": -1,
-        "iterations": 3500,
+        "iterations": 200,
         "learning_rate": 0.009,
         "max_depth": 7,
         "num_leaves": 128
@@ -107,21 +109,18 @@ def main():
                       eval_set=(X_test, y_test),
                       use_best_model=True,
                       plot=True)
-    
-    # model.fit(df[features],
-    #           df['target_20d'],
-    #           categorical_feature=['encoded_ticker'])
 
     # choose data as of most recent
     # friday in Signal data + 1 week.
-    last_friday = datetime.now() + relativedelta(weekday=FR(-2))
-    date_string = last_friday.strftime('%Y-%m-%d')
-    # this would not work as df_signal
-    # might include newer data already
-    # friday = df_signal.friday_date.max()
+    last_friday = df_numerai.friday_date.max()\
+        + relativedelta(weekday=FR(2))
+    last_friday = last_friday.strftime('%Y-%m-%d')
 
     # filter W+1 data
-    df_live = df_signal[df_signal['friday_date'] == date_string]
+    df_live = df_signal[df_signal['friday_date'] == last_friday]
+
+    # dev
+    logger.info(f"Target friday: {df_live.friday_date.max()}")
 
     # retrieve ticker metadata
     df_live = pd.merge(df_live,
@@ -133,12 +132,15 @@ def main():
     df_live['signal'] = model.predict(df_live[features])
 
     # build and save signal data to csv
-    df_live = df_live[['bloomberg_ticker', 'signal']]
-    df_live.to_csv('signal.csv', index=False)
+    logger.info(f"Saving")
+    signal_filepath = f"{DATA_FOLDER}/signal/signal.csv"
+    df_live[['bloomberg_ticker', 'signal']].to_csv(signal_filepath,
+                                                   index=False)
 
     # upload signal data
     logger.info(f"Uploading")
-    # napi.upload_predictions('sternburg')
+    napi.upload_predictions(signal_filepath,
+                            model_id=get_model_id('goudale'))
 
     logger.info(f"Success!")
 
