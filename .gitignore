@@ -18,6 +18,10 @@
 /data/numerai/*
 !/data/numerai/blank
 
+!/data/signal
+/data/signal/*
+!/data/signal/blank
+
 !/data/numerai_test
 /data/numerai_test/*
 !/data/numerai_test/blank
@@ -37,4 +41,6 @@ Pipfile.lock
 
 
 catboost_info
+
+notebook
 

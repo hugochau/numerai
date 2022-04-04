@@ -1,0 +1,9 @@
+numerai-cli
+numerapi
+pandas
+scikit-learn
+joblib
+boto3
+lightgbm
+numpy
+traitlets

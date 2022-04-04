@@ -45,18 +45,20 @@ class S3:
 
     def download_file(self,
                       file_name: str,
-                      bucket_name: str) -> dict:
+                      bucket_name: str,
+                      target_folder: str) -> dict:
         """
         Download file from s3 bucket
 
         param:
             - file_name: file to download
             - bucket_name: bucket to download from
+            - target_folder: where file is saved
         """
         try:
             self.client.download_file(bucket_name,
                                       file_name,
-                                      f'{DATA_FOLDER}/model/{file_name}')
+                                      f"{DATA_FOLDER}/{target_folder}/{file_name}")
 
             return True
 

@@ -2,7 +2,7 @@
 
 This repository contains:
 - numerai models
-- numerai compute infrastructure in the form of a `Dockerfile`
+- numerai compute infrastructure in the form of a `Dockerfile` and an executable `entry.sh`
 
 ## How to add model
 
@@ -43,6 +43,7 @@ pip install -r requirements
 pipenv install -r requirements
 
 # update Dockerfile and entry.sh
+# check entry.sh inline doc for more details
 
 # check https://docs.numer.ai/tournament/compute
 # config node
