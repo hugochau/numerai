@@ -3,6 +3,7 @@
 data/numerai.zip
 data/predictions.csv
 data/numerai/*
+data/signal/*
 data/numerai_test/*
 data/model/*.joblib
 

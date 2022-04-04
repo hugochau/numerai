@@ -36,7 +36,7 @@ def load_model(model_name: str):
         if re.search(f'^{model_name}.*', file['Key']):
             logger.info(f"Downloading {S3_BUCKET}.{file['Key']}")
             filename = file['Key']
-            sss.download_file(file['Key'], S3_BUCKET)
+            sss.download_file(file['Key'], S3_BUCKET, 'model')
 
             # algo = file['Key'].split('_')[1].split('.')[0]
             # algo = algo[0].upper() + algo[1:]

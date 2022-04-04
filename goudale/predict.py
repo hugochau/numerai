@@ -17,6 +17,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 
 from common.module.logger import Logger
+from common.module.aws import S3
 from common.module import Splitter
 from common.config.constant import (
     SIGNAL_TRAIN_DATA,
@@ -51,11 +52,12 @@ def main():
     # quick operations
     # friday_date to %Y%m%d format
     # splitting ticker
-    df_numerai['friday_date'] = pd.to_datetime(df_numerai['friday_date'], format='%Y%m%d')
+    df_numerai['friday_date'] = pd.to_datetime(df_numerai['friday_date'],
+                                               format='%Y%m%d')
     df_numerai['short_ticker'] = df_numerai['bloomberg_ticker'].str.split(' ').str[0]
 
     # dev
-    logger.info(f"Numerai data latest friday: {df_numerai.friday_date.max()}")
+    logger.info(f"Numerai data {df_numerai.shape}: {df_numerai.friday_date.max()}")
 
     # building a ticker table
     df_tickers = df_numerai\
@@ -64,6 +66,9 @@ def main():
         .reset_index()
 
     # read latest training data
+    sss = S3()
+    sss.download_file(f'updated_training.csv', 'signalsdata', 'signal')
+
     df_signal = pd.read_csv(f"{DATA_FOLDER}/signal/updated_training.csv")
 
     # quick transformation on friday_date
@@ -75,7 +80,7 @@ def main():
     df_signal['friday_date'] = pd.to_datetime(df_signal['friday_date'],
                                               format='%Y-%m-%d')
 
-    logger.info(f"Home data latest friday: {df_signal.friday_date.max()}")
+    logger.info(f"Home data {df_signal.shape}: {df_signal.friday_date.max()}")
 
     # merge our feature data with Numerai targets
     df = pd.merge(df_signal,
@@ -86,10 +91,12 @@ def main():
     # drop na
     df = df.dropna(subset=['target_20d'])
 
+    logger.info(f"Merge data {df.shape}: {df_signal.friday_date.max()}")
+
     # select feature names
     features = df_signal.filter(like='FEATURE_').columns.to_list()
 
-    # fit lightGBM model
+    # define model
     params = {
         "thread_count": -1,
         "iterations": 200,
@@ -101,14 +108,14 @@ def main():
     model = cat(task_type=MACHINE_TYPE,
                 **params)
 
+    # fit model
     (X_train, X_test, y_train, y_test) = Splitter.split(df[features],
                                                         df['target_20d'])
 
     model = model.fit(X_train,
                       y_train,
                       eval_set=(X_test, y_test),
-                      use_best_model=True,
-                      plot=True)
+                      use_best_model=True)
 
     # choose data as of most recent
     # friday in Signal data + 1 week.
@@ -133,7 +140,7 @@ def main():
 
     # build and save signal data to csv
     logger.info(f"Saving")
-    signal_filepath = f"{DATA_FOLDER}/signal/signal.csv"
+    signal_filepath = f"{DATA_FOLDER}/predictions.csv"
     df_live[['bloomberg_ticker', 'signal']].to_csv(signal_filepath,
                                                    index=False)
 

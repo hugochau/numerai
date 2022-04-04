@@ -28,7 +28,7 @@ def read_param(model_name: str):
     except:
         logger = Logger().logger
         logger.info(f"Could not find parameter file. Loading from S3 instead")
-        S3().download_file(f'param/{model_name}.json', S3_BUCKET)
+        S3().download_file(f'param/{model_name}.json', S3_BUCKET, 'model')
 
         with open(filename) as file:
             dict = json.load(file)

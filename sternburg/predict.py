@@ -16,6 +16,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 
 from common.module.logger import Logger
+from common.module.aws import S3
 from common.config.constant import (
     SIGNAL_TRAIN_DATA,
     DATA_FOLDER,
@@ -42,8 +43,8 @@ def main():
 
     # read latest signal dataset
     # be it from numerai's repository or file
-    # df_numerai = pd.read_csv(SIGNAL_TRAIN_DATA)
-    df_numerai = pd.read_csv(f"{DATA_FOLDER}/signal/signals_train_val_bbg.csv")
+    df_numerai = pd.read_csv(SIGNAL_TRAIN_DATA)
+    # df_numerai = pd.read_csv(f"{DATA_FOLDER}/signal/signals_train_val_bbg.csv")
 
     # quick data transformations
     # friday_date to %Y%m%d format
@@ -61,6 +62,9 @@ def main():
         .reset_index()
 
     # read latest training data
+    sss = S3()
+    sss.download_file(f'updated_training.csv', 'signalsdata', 'signal')
+
     df_signal = pd.read_csv(f"{DATA_FOLDER}/signal/updated_training.csv")
 
     # quick transformation on friday_date
@@ -133,7 +137,7 @@ def main():
 
     # build and save signal data to csv
     logger.info(f"Saving")
-    signal_filepath = f"{DATA_FOLDER}/signal/signal.csv"
+    signal_filepath = f"{DATA_FOLDER}/predictions.csv"
     df_live[['bloomberg_ticker', 'signal']].to_csv(signal_filepath,
                                                    index=False)
 
