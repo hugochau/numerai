@@ -87,4 +87,4 @@ FEATURE_SIZE = 'medium'
 
 MACHINE_TYPE = 'CPU'
 
-SIGNAL_TRAIN_DATA = 'https://numerai-signals-public-data.s3-us-west-2.amazonaws.com/signals_train_val_bbg.csv'
+SIGNAL_DATA_S3 = 'https://numerai-signals-public-data.s3-us-west-2.amazonaws.com'

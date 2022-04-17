@@ -8,4 +8,4 @@
 # python model_name/predict.py
 # can be also model_name/tits.py
 # as long as it computes and submits predictions!
-python goudale/predict.py
+python sternburg/predict.py
