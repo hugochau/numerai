@@ -174,11 +174,12 @@ def main():
 
     # upload signal data
     if not args.test:
-        logger.info(f"Uploading")
+        model_name = 'goudale'
+        logger.info(f"Uploading {model_name}")
         napi = numerapi.SignalsAPI(secret_key=SECRET_KEY,
                                 public_id=PUBLIC_ID)
         napi.upload_predictions(signal_filepath,
-                                model_id=get_model_id('goudale'))
+                                model_id=get_model_id(model_name))
 
     logger.info(f"Success!")
 
