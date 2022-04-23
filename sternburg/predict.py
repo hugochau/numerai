@@ -87,7 +87,7 @@ def main():
     # columns renaming
     columns = {
         "date": "friday_date",
-        "symbol": "yahoo_ticker"
+        "ticker": "yahoo_ticker"
     }
     df_feature = df_feature.rename(columns=columns)
     df_feature['friday_date'] = pd.to_datetime(df_feature['friday_date'],
