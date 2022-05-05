@@ -20,6 +20,7 @@ class S3:
 
     def upload_file(self,
                     file_name: str,
+                    test: str,
                     bucket_name: str = S3_BUCKET) -> dict:
         """
         Upload a file to an S3 bucket
@@ -30,6 +31,8 @@ class S3:
         return:
             - formatted boto3 response
         """
+        bucket_name = f'{bucket_name}-staging' if test == '_test' else bucket_name
+
         try:
             response = self.client.upload_file(
                 f'{DATA_FOLDER}/model/{file_name}.joblib',

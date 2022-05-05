@@ -18,7 +18,7 @@ from common.module import Parser, Api, Data
 from common.module.aws import S3
 from common.module.logger import Logger
 from common.util.save_model import save_model
-from model.megafelinai import MegaFelinai
+from model.gigadestroyai import GigaDestroyai
 
 
 def main():
@@ -30,24 +30,24 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'megafelinai'
+    modelname = 'gigadestroyai'
     logger.info(f"Selected model: {modelname}")
 
     # download current training datasets
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download training datasets")
-        Api().download_dataset('v3', 'training')
+        Api().download_dataset('v4', 'train')
 
     # load training data
     logger.info(f"Read training data")
-    dtrain = Data.load_parquet('v3', 'training', args.test)
+    dtrain = Data.load_parquet('v4', 'train', args.test)
     dtrain.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtrain.df.shape} training")
 
     # train model
     logger.info(f"Training model")
-    model = MegaFelinai(dtrain.x, dtrain.y)
+    model = GigaDestroyai(dtrain.x, dtrain.y)
 
     # free up memory
     del dtrain

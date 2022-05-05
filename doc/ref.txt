@@ -1,0 +1,8 @@
+# check data reference
+https://numer.ai/data/v3
+
+# Numerai Python API
+https://numerapi.readthedocs.io/en/stable/
+
+# example scripts
+https://github.com/numerai/example-scripts

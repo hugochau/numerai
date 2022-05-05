@@ -66,22 +66,40 @@ SECRET_KEY = CREDS['secret_key']
 PUBLIC_ID = CREDS['public_id']
 
 DFILES = {
-    'tournament': {
-        'numerai_tournament_data_int8.parquet',
-        'features.json'
+    'v2': {
+        'tournament': {
+            'numerai_live_data.parquet'
+        },
+        'training': {
+            'numerai_datasets.zip'
+        }
     },
-    'training': {
-        'numerai_training_data_int8.parquet',
-        'features.json'
+    'v3': {
+        'tournament': {
+            'numerai_tournament_data_int8.parquet',
+            'features.json'
+        },
+        'training': {
+            'numerai_training_data_int8.parquet',
+            'features.json'
+        }
+    },
+    'v4': {
+        'tournament': {
+            'live_int8.parquet',
+            'features.json'
+        },
+        'training': {
+            'train_int8.parquet',
+            'features.json'
+        }
     }
 }
-
 
 AWS_REGION = 'us-east-1'
 S3_BUCKET = 'numerai-model'
 
 ERA_COL = "era"
-TARGET_COL = "target_nomi_20"
 DATA_TYPE_COL = "data_type"
 FEATURE_SIZE = 'medium'
 

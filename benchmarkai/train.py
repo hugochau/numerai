@@ -19,6 +19,7 @@ from common.module.aws import S3
 from common.module.logger import Logger
 from common.util.save_model import save_model
 from model.benchmarkai import Benchmarkai
+from common.util.unzip_file import unzip_file
 
 
 def main():
@@ -31,13 +32,17 @@ def main():
     # parse CLI arg
     args = Parser.parse()
     modelname = 'benchmarkai'
-    logger.info(f"Selected model:{modelname}")
+    logger.info(f"Selected model: {modelname}")
 
     # download current training datasets
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download training datasets")
-        Api().download_dataset()
+        Api().download_dataset('v2', 'training')
+
+        logger.info(f"Unzipping")
+        filepath='data/numerai/v2'
+        unzip_file(f'{filepath}/numerai_datasets.zip', filepath)
 
     # load training data
     logger.info(f"Read training data")
@@ -55,7 +60,7 @@ def main():
     # save and upload model to s3
     logger.info(f"Save and upload model")
     save_model(model.model, modelname)
-    # S3().upload_file(modelname)
+    S3().upload_file(modelname, args.test)
 
 
 if __name__ == '__main__':
