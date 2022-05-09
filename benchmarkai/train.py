@@ -18,8 +18,8 @@ from common.module import Parser, Api, Data
 from common.module.aws import S3
 from common.module.logger import Logger
 from common.util.save_model import save_model
-from model.benchmarkai import Benchmarkai
 from common.util.unzip_file import unzip_file
+from model.benchmarkai import Benchmarkai
 
 
 def main():

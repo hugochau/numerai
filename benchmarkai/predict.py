@@ -65,11 +65,6 @@ def main():
     logger.info(f"Upload predictions")
     napi.upload_predictions(modelname, datatype)
 
-    # upload predictions/diagnostic
-    # if args.data == 'new':
-
-    #     napi.upload_diagnostics(modelname)
-
 
 if __name__ == '__main__':
     main()
