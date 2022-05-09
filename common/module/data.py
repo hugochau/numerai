@@ -309,9 +309,9 @@ class Data:
             # pare down the number of eras to every 4th era
             # brings weekly data back at monthly level
             # only for training dataset
-            if type == 'training':
-                every_4th_era = df[ERA_COL].unique()[::4]
-                df = df[df[ERA_COL].isin(every_4th_era)]
+            # if type == 'training':
+            #     every_4th_era = df[ERA_COL].unique()[::4]
+            #     df = df[df[ERA_COL].isin(every_4th_era)]
 
             return Data(df.reset_index())
 
@@ -333,9 +333,9 @@ class Data:
             # pare down the number of eras to every 4th era
             # brings weekly data back at monthly level
             # only for training dataset
-            if type == 'train':
-                every_4th_era = df[ERA_COL].unique()[::4]
-                df = df[df[ERA_COL].isin(every_4th_era)]
+            # if type == 'train':
+            #     every_4th_era = df[ERA_COL].unique()[::4]
+            #     df = df[df[ERA_COL].isin(every_4th_era)]
 
             return Data(df.reset_index())
 

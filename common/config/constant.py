@@ -104,5 +104,6 @@ DATA_TYPE_COL = "data_type"
 FEATURE_SIZE = 'medium'
 
 MACHINE_TYPE = 'CPU'
+PLOT_TYPE = False
 
 SIGNAL_DATA_S3 = 'https://numerai-signals-public-data.s3-us-west-2.amazonaws.com'

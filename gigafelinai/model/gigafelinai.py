@@ -36,8 +36,7 @@ class GigaFelinai(Model):
         estimator = catt.fit(X_train,
                              y_train,
                              eval_set=(X_test, y_test),
-                             use_best_model=True,
-                             plot=True)
+                             use_best_model=True)
 
         return estimator
 

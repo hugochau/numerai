@@ -10,7 +10,7 @@ __email__ = 'numerai_2021@protonmail.com'
 from catboost import CatBoostRegressor as cat
 import joblib
 
-from common.config.constant import DATA_FOLDER, MACHINE_TYPE
+from common.config.constant import DATA_FOLDER, MACHINE_TYPE, PLOT_TYPE
 from common.module.model.model import Model
 from common.module.splitter import Splitter
 from common.util.read_param import read_param
@@ -37,7 +37,7 @@ class GigaFelinai(Model):
                              y_train,
                              eval_set=(X_test, y_test),
                              use_best_model=True,
-                             plot=True)
+                             plot=PLOT_TYPE)
 
         return estimator
 
