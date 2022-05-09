@@ -1,8 +1,7 @@
 """
-lgbm_regressor.py
+gigafelinai.py
 
-Implements Lgbm Regressor
-Refer to model.model.py for documentation
+Implements GigaFelinai
 """
 
 __author__ = "Julien Lefebvre, Hugo Chauvary"
@@ -17,7 +16,7 @@ from common.module.splitter import Splitter
 from common.util.read_param import read_param
 
 
-class MegaFelinai(Model):
+class GigaFelinai(Model):
     def __init__(self, X, y, pre_trained=False):
         # trained model as class attribute
         self.model = self.fit(X, y, pre_trained)
@@ -35,10 +34,10 @@ class MegaFelinai(Model):
         (X_train, X_test, y_train, y_test) = Splitter.split(X, y)
 
         estimator = catt.fit(X_train,
-                            y_train,
-                            eval_set=(X_test, y_test),
-                            use_best_model=True,
-                            plot=True)
+                             y_train,
+                             eval_set=(X_test, y_test),
+                             use_best_model=True,
+                             plot=True)
 
         return estimator
 
