@@ -1,8 +1,7 @@
 """
 lgbm_regressor.py
 
-Implements Lgbm Regressor
-Refer to model.model.py for documentation
+Implements MegaFelinai
 """
 
 __author__ = "Julien Lefebvre, Hugo Chauvary"

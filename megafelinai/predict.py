@@ -33,37 +33,37 @@ def main():
     # parse CLI arg
     args = Parser.parse()
     modelname = 'megafelinai'
-    datatype = 'new'
+    datatype = 'v3'
 
     # download current training datasets
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download tournament dataset")
-        napi.download_new_dataset('tournament')
-        
+        napi.download_dataset(datatype, 'tournament')
+
     # load data
     logger.info(f"Read tournament data")
-    dtour = Data.load_parquet('tournament', args.test)
+    dtour = Data.load_parquet(datatype, 'tournament', args.test)
     dtour.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtour.df.shape} tournament")
 
-    # load model from s3
-    load_model(modelname)
-    model = MegaFelinai(None, None, True)
+    # # load model from s3
+    # load_model(modelname, args.test)
+    # model = MegaFelinai(None, None, True)
 
-    # compute predictions
-    logger.info(f"Compute predictions")
-    ids, yhat = model.predict(dtour)
+    # # compute predictions
+    # logger.info(f"Compute predictions")
+    # ids, yhat = model.predict(dtour)
 
-    # free up memory
-    del dtour
+    # # free up memory
+    # del dtour
 
-    # save and upload predictions
-    logger.info(f"Save predictions")
-    Prediction(ids, yhat).save()
+    # # save and upload predictions
+    # logger.info(f"Save predictions")
+    # Prediction(ids, yhat).save()
 
-    logger.info(f"Upload predictions")
-    napi.upload_predictions(modelname, datatype)
+    # logger.info(f"Upload predictions to {modelname}")
+    # napi.upload_predictions(modelname, datatype)
 
 
 if __name__ == '__main__':

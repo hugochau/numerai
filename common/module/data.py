@@ -7,6 +7,7 @@ Implements Data
 import numpy as np
 import pandas as pd
 import json
+from common import module
 
 from common.config.constant import (
     DATA_FOLDER,
@@ -26,7 +27,6 @@ from common.config.constant import (
     ERA_INT_TO_STR,
     ERA_STR_TO_INT,
     ERA_COL,
-    TARGET_COL,
     DATA_TYPE_COL,
     FEATURE_SIZE
 )
@@ -224,17 +224,19 @@ class Data:
     @log_item
     def load_csv(type: str, test: str, single_precision: bool = False):
         """
-        Load numerai dataset.
-
-        It includes train data by default. To work with tournament data only,
-        set `include_train` to False.
+        Load numerai v2 training dataset.
 
         Set `single_precision` to True in order to have data in float32 (saves memory).
+
+        args:
+            - type:
+            - test: whether to load test data or not
+            - single_precision:
         """
         if single_precision:
             # read first 100 rows to scan types
             # then replace all float64 types with float32
-            df_test = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/numerai_{type}_data.csv',
+            df_test = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/v2/numerai_{type}_data.csv',
                                   nrows=100,
                                   header=0,
                                   index_col=0)
@@ -242,44 +244,15 @@ class Data:
             float_cols = [c for c in df_test if df_test[c].dtype == "float64"]
             float32_cols = {c: np.float32 for c in float_cols}
 
-            # df = pd.read_csv(f'{DATA_FOLDER}/numerai/numerai_{type}_data.csv',
-            #                     header=0,
-            #                     index_col=0,
-            #                     engine='c',
-            #                     nrows=2000,
-            #                     dtype=float32_cols)
+            df = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/v2/numerai_{type}_data.csv',
+                             header=0,
+                             index_col=0,
+                             engine='c',
+                             dtype=float32_cols)
 
-            # df = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/numerai_{type}_data.csv',
-            #                     header=0,
-            #                     index_col=0,
-            #                     engine='c',
-            #                     dtype=float32_cols)
-
-            df = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/numerai_{type}_data.csv',
-                                header=0,
-                                index_col=0,
-                                engine='c',
-                                dtype=float32_cols)
-
-            # if include_tournament:
-            #     tourn = pd.read_csv(TOURNAMENT_FILE,
-            #                         header=0,
-            #                         index_col=0,
-            #                         engine='c',
-            #                         dtype=float32_cols)
-
-            #     # merge train and tournament data to single dataframe
-            #     df = pd.concat([train, tourn], axis=0)
-
-            # else:
-            #     df = train
         else:
             # regular parsing, float64 will be used
-            # df = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/numerai_{type}_data.csv',
-            #                     header=0,
-            #                     index_col=0)
-
-            tp = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/numerai_{type}_data.csv',
+            tp = pd.read_csv(f'{DATA_FOLDER}/numerai{test}/v2/numerai_{type}_data.csv',
                              iterator=True,
                              chunksize=10000,
                              low_memory=True,
@@ -287,98 +260,84 @@ class Data:
 
             df = pd.concat(tp, ignore_index=True)
 
-            # if include_tournament:
-            #     tourn = pd.read_csv(TOURNAMENT_FILE,
-            #                         header=0,
-            #                         index_col=0)
-            #     # merge train and tournament data to single dataframe
-            #     df = pd.concat([train, tourn], axis=0)
-            # else:
-            #     df = train
-
-        # # rename columns
-        # rename_map = {'data_type': 'region'}
-        # # intelligence
-        # for i in range(1, N_FEATURES_INTEL + 1):
-        #     rename_map['feature_intelligence' + str(i)] = 'i' + str(i)
-        # # charisma
-        # for i in range(1, N_FEATURES_CHARI + 1):
-        #     rename_map['feature_charisma' + str(i)] = 'c' + str(i)
-        # # strength
-        # for i in range(1, N_FEATURES_STREN + 1):
-        #     rename_map['feature_strength' + str(i)] = 's' + str(i)
-        # # dexterity
-        # for i in range(1, N_FEATURES_DEXT + 1):
-        #     rename_map['feature_dexterity' + str(i)] = 'd' + str(i)
-        # # constitution
-        # for i in range(1, N_FEATURES_CONST + 1):
-        #     rename_map['feature_constitution' + str(i)] = 'p' + str(i)
-        # # wisdom
-        # for i in range(1, N_FEATURES_WISDO + 1):
-        #     rename_map['feature_wisdom' + str(i)] = 'w' + str(i)
-
-        # df.rename(columns=rename_map, inplace=True)
-
-        # convert era, region, and labels to np.float32 or np.float64 depending on the mode
-        # df['era'] = df['era'].map(ERA_STR_TO_FLOAT)
-        # df['region'] = df['region'].map(REGION_STR_TO_FLOAT)
-
-        # if single_precision:
-        #     df.iloc[:, 0:2] = df.iloc[:, 0:2].astype('float32')
-        # else:
-        #     df.iloc[:, 0:2] = df.iloc[:, 0:2].astype('float64')
-
-        # make sure memory is contiguous so that, e.g., data.x is a view
-        # df = df.copy()
-
-        # # to avoid copies we need the dtype of each column to be the same
-        # if df.dtypes.unique().size != 1:
-        #     raise TypeError("dtype of each column should be the same")
-
         return Data(df)
 
 
     @staticmethod
     @log_item
-    def load_parquet(type: str, test: str):
+    def load_parquet(version: str, type: str, test: str):
         """
         Load data object from parquet file; return Data
 
         args:
+            - version: dataset version
             - type: training/validation/tournament
             - test: load test dataset
 
         returns
             - Data object
         """
-        # read the feature metadata and get the "small" feature set
-        with open(f'{DATA_FOLDER}/numerai/features.json', "r") as f:
-            feature_metadata = json.load(f)
+        if version == 'v2':
+            filepath = f'{DATA_FOLDER}/numerai{test}/{version}/numerai_{type}_data.parquet'
+            df = pd.read_parquet(filepath)
 
-        # select feature set
-        features = feature_metadata["feature_sets"][FEATURE_SIZE]
+            features = df.filter(like='feature_')\
+                .columns\
+                .to_list()
 
-        # read in just those features along with era and target columns
-        read_columns = ['id', ERA_COL, DATA_TYPE_COL] + features + [TARGET_COL]
+            read_columns = ['id', ERA_COL, DATA_TYPE_COL] + features +  ['target']
 
-        df = pd.read_parquet(f'{DATA_FOLDER}/numerai{test}/numerai_{type}_data_int8.parquet',
-                             columns=read_columns)
+            df = df[read_columns]
 
-        # pare down the number of eras to every 4th era
-        # brings weekly data back at monthly level
-        # only for training dataset
-        if type == 'training':
-            every_4th_era = df[ERA_COL].unique()[::4]
-            df = df[df[ERA_COL].isin(every_4th_era)]
+            return Data(df)
 
-        # df.drop([ERA_COL], axis=1)
+        elif version == 'v3':
+            # read the feature metadata and get the FEATURE_SIZE feature set
+            with open(f'{DATA_FOLDER}/numerai/{version}/features.json', "r") as f:
+                feature_metadata = json.load(f)
 
-        # columns = [c for c in df.columns if
-        #     c.startswith("feature_")
-        #     or c == 'target_nomi_20'
-        # ]
+            # select feature set
+            features = feature_metadata["feature_sets"][FEATURE_SIZE]
 
-        return Data(df.reset_index())
+            # read in just those features along with era and target columns
+            read_columns = ['id', ERA_COL, DATA_TYPE_COL] + features + ['target_nomi_20']
+
+            filepath = f'{DATA_FOLDER}/numerai{test}/{version}/numerai_{type}_data_int8.parquet'
+            df = pd.read_parquet(filepath,
+                                 columns=read_columns)
+
+            # pare down the number of eras to every 4th era
+            # brings weekly data back at monthly level
+            # only for training dataset
+            # if type == 'training':
+            #     every_4th_era = df[ERA_COL].unique()[::4]
+            #     df = df[df[ERA_COL].isin(every_4th_era)]
+
+            return Data(df.reset_index())
+
+        else:
+            # read the feature metadata and get the FEATURE_SIZE feature set
+            with open(f'{DATA_FOLDER}/numerai/{version}/features.json', "r") as f:
+                feature_metadata = json.load(f)
+
+            # select feature set
+            features = feature_metadata["feature_sets"][FEATURE_SIZE]
+
+            # read in just those features along with era and target columns
+            read_columns = ['id', ERA_COL, DATA_TYPE_COL] + features + ['target_nomi_v4_20']
+
+            filepath = f'{DATA_FOLDER}/numerai{test}/{version}/{type}_int8.parquet'
+            df = pd.read_parquet(filepath,
+                                 columns=read_columns)
+
+            # pare down the number of eras to every 4th era
+            # brings weekly data back at monthly level
+            # only for training dataset
+            # if type == 'train':
+            #     every_4th_era = df[ERA_COL].unique()[::4]
+            #     df = df[df[ERA_COL].isin(every_4th_era)]
+
+            return Data(df.reset_index())
 
 
     @staticmethod

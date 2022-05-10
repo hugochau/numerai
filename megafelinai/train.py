@@ -31,31 +31,31 @@ def main():
     # parse CLI arg
     args = Parser.parse()
     modelname = 'megafelinai'
-    logger.info(f"Selected model:{modelname}")
+    logger.info(f"Selected model: {modelname}")
 
     # download current training datasets
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download training datasets")
-        Api().download_new_dataset('training')
+        Api().download_dataset('v3', 'training')
 
     # load training data
     logger.info(f"Read training data")
-    dtrain = Data.load_parquet('training', args.test)
+    dtrain = Data.load_parquet('v3', 'training', args.test)
     dtrain.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtrain.df.shape} training")
 
-    # train model
-    logger.info(f"Training model")
-    model = MegaFelinai(dtrain.x, dtrain.y)
+    # # train model
+    # logger.info(f"Training model")
+    # model = MegaFelinai(dtrain.x, dtrain.y)
 
-    # free up memory
-    del dtrain
+    # # free up memory
+    # del dtrain
 
-    # save and upload model to s3
-    logger.info(f"Save and upload model")
-    save_model(model.model, modelname)
-    S3().upload_file(modelname)
+    # # save and upload model to s3
+    # logger.info(f"Save and upload model")
+    # save_model(model.model, modelname)
+    # S3().upload_file(modelname, args.test)
 
 
 if __name__ == '__main__':

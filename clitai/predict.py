@@ -41,7 +41,7 @@ def main():
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download tournament dataset")
-        napi.download_dataset()
+        napi.download_dataset('v2')
         
     # load data
     logger.info(f"Read tournament data")

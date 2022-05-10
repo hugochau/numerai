@@ -40,7 +40,7 @@ class Api:
         return napi
 
 
-    def download_dataset(self) -> None:
+    def download_dataset(self, version: str, type: str) -> None:
         """
         Download contest data into data folder
 
@@ -48,17 +48,10 @@ class Api:
             - replace: replace any existing file
                 - default to False
         """
-        # # drop archive
-        # if replace:
-        #     try:
-        #         os.remove(f"{DATA_FOLDER}/numerai.zip")
-
-        #     except:
-        #         pass
-
-        self.api.download_current_dataset(dest_path=DATA_FOLDER,
-                                          dest_filename='numerai',
-                                          unzip=True)
+        for dfile in DFILES[version][type]:
+            dest_path = f"{DATA_FOLDER}/numerai/{version}/{dfile}"
+            self.api.download_dataset(f'{version}/{dfile}',
+                                      dest_path=dest_path)
 
 
     def download_new_dataset(self, type: str) -> None:
@@ -97,8 +90,9 @@ class Api:
             - data_type: configures upload_predictions.version attribute
         """
         version = {
-            'legacy': 1,
-            'new': 2
+            'v2': 1,
+            'v3': 2,
+            'v4': 2
         }
 
         self.api.upload_predictions(f"{DATA_FOLDER}/predictions.csv",

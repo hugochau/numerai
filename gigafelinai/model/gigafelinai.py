@@ -1,8 +1,7 @@
 """
-lgbm_regressor.py
+gigafelinai.py
 
-Implements Lgbm Regressor
-Refer to model.model.py for documentation
+Implements GigaFelinai
 """
 
 __author__ = "Julien Lefebvre, Hugo Chauvary"
@@ -11,13 +10,13 @@ __email__ = 'numerai_2021@protonmail.com'
 from catboost import CatBoostRegressor as cat
 import joblib
 
-from common.config.constant import DATA_FOLDER, MACHINE_TYPE, PLOT_TYPE
+from common.config.constant import DATA_FOLDER, MACHINE_TYPE
 from common.module.model.model import Model
 from common.module.splitter import Splitter
 from common.util.read_param import read_param
 
 
-class Felinai(Model):
+class GigaFelinai(Model):
     def __init__(self, X, y, pre_trained=False):
         # trained model as class attribute
         self.model = self.fit(X, y, pre_trained)
@@ -35,10 +34,9 @@ class Felinai(Model):
         (X_train, X_test, y_train, y_test) = Splitter.split(X, y)
 
         estimator = catt.fit(X_train,
-                            y_train,
-                            eval_set=(X_test, y_test),
-                            use_best_model=True,
-                            plot=PLOT_TYPE)
+                             y_train,
+                             eval_set=(X_test, y_test),
+                             use_best_model=True)
 
         return estimator
 

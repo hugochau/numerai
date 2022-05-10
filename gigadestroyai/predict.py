@@ -19,7 +19,7 @@ from common.module import Parser, Api, Data, Prediction
 from common.module.logger import Logger
 from common.module.api import Api
 from common.util.load_model import load_model
-from model.felinai import Felinai
+from model.gigadestroyai import GigaDestroyai
 
 
 def main():
@@ -32,24 +32,24 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'felinai'
-    datatype = 'v2'
+    modelname = 'gigadestroyai'
+    datatype = 'v4'
 
     # download current training datasets
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download tournament dataset")
-        napi.download_dataset('v2', 'tournament')
+        napi.download_dataset(datatype, 'tournament')
 
     # load data
     logger.info(f"Read tournament data")
-    dtour = Data.load_parquet('v2', 'live', args.test)
+    dtour = Data.load_parquet(datatype, 'live', args.test)
     dtour.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtour.df.shape} tournament")
 
     # load model from s3
     load_model(modelname, args.test)
-    model = Felinai(None, None, True)
+    model = GigaDestroyai(None, None, True)
 
     # compute predictions
     logger.info(f"Compute predictions")
@@ -62,7 +62,7 @@ def main():
     logger.info(f"Save predictions")
     Prediction(ids, yhat).save()
 
-    logger.info(f"Upload predictions")
+    logger.info(f"Upload predictions to {modelname}")
     napi.upload_predictions(modelname, datatype)
 
 
