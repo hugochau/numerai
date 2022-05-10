@@ -30,7 +30,7 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'gigadestroyai'
+    modelname = 'gigafelinai'
     logger.info(f"Selected model: {modelname}")
 
     # download current training datasets

@@ -2,7 +2,11 @@
 .git
 data/numerai.zip
 data/predictions.csv
-data/numerai/*
+
+data/numerai/v2/*
+data/numerai/v3/*
+data/numerai/v4/*
+
 data/signal/*
 data/numerai_test/*
 data/model/*.joblib
