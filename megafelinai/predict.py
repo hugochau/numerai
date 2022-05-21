@@ -32,7 +32,7 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'megafelinai'
+    modelname = 'megafelinai_v2'
     datatype = 'v3'
 
     # download current training datasets
@@ -47,23 +47,23 @@ def main():
     dtour.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtour.df.shape} tournament")
 
-    # # load model from s3
-    # load_model(modelname, args.test)
-    # model = MegaFelinai(None, None, True)
+    # load model from s3
+    load_model(modelname, args.test)
+    model = MegaFelinai(None, None, True)
 
-    # # compute predictions
-    # logger.info(f"Compute predictions")
-    # ids, yhat = model.predict(dtour)
+    # compute predictions
+    logger.info(f"Compute predictions")
+    ids, yhat = model.predict(dtour)
 
-    # # free up memory
-    # del dtour
+    # free up memory
+    del dtour
 
-    # # save and upload predictions
-    # logger.info(f"Save predictions")
-    # Prediction(ids, yhat).save()
+    # save and upload predictions
+    logger.info(f"Save predictions")
+    Prediction(ids, yhat).save()
 
-    # logger.info(f"Upload predictions to {modelname}")
-    # napi.upload_predictions(modelname, datatype)
+    logger.info(f"Upload predictions to {modelname}")
+    napi.upload_predictions(modelname, datatype)
 
 
 if __name__ == '__main__':

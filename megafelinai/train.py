@@ -49,13 +49,13 @@ def main():
     # logger.info(f"Training model")
     # model = MegaFelinai(dtrain.x, dtrain.y)
 
-    # # free up memory
-    # del dtrain
+    # free up memory
+    del dtrain
 
-    # # save and upload model to s3
-    # logger.info(f"Save and upload model")
-    # save_model(model.model, modelname)
-    # S3().upload_file(modelname, args.test)
+    # save and upload model to s3
+    logger.info(f"Save and upload model")
+    save_model(model.model, modelname)
+    S3().upload_file(modelname, args.test)
 
 
 if __name__ == '__main__':
