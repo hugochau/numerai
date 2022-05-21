@@ -45,9 +45,9 @@ def main():
     dtrain.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtrain.df.shape} training")
 
-    # # train model
-    # logger.info(f"Training model")
-    # model = MegaFelinai(dtrain.x, dtrain.y)
+    # train model
+    logger.info(f"Training model")
+    model = MegaFelinai(dtrain.x, dtrain.y)
 
     # free up memory
     del dtrain

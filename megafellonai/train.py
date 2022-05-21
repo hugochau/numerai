@@ -52,9 +52,9 @@ def main():
     # # free up memory
     # del dtrain
 
-    # # save and upload model to s3
-    # logger.info(f"Save and upload model")
-    # save_model(model.model, modelname)
+    # save and upload model to s3
+    logger.info(f"Save and upload model")
+    save_model(model.model, modelname)
     # S3().upload_file(modelname)
 
 
