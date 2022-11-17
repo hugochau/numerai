@@ -89,18 +89,16 @@ class Api:
             - model_name: model name as seen on numerai
             - data_type: configures upload_predictions.version attribute
         """
-        version = {
-            'v2': 1,
-            'v3': 2,
-            'v4': 2
-        }
-
-        # self.api.upload_predictions(f"{DATA_FOLDER}/predictions.csv",
-        #                             model_id=get_model_id(model_name),
-        #                             version=(version[data_type] or 2))
+        # unclear so keeping for now
+        # version = {
+        #     'v2': 1,
+        #     'v3': 2,
+        #     'v4': 2
+        # }
 
         self.api.upload_predictions(f"{DATA_FOLDER}/predictions.csv",
                                     model_id=get_model_id(model_name))
+        #                             version=(version[data_type] or 2))
 
 
     # @log_item
