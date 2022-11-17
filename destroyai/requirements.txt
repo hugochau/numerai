@@ -7,3 +7,9 @@ pyarrow
 ipywidgets
 boto3
 catboost
+
+# build tools
+pytest
+flake8
+coverage
+autopep8

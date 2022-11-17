@@ -33,22 +33,22 @@ def main():
     # parse CLI arg
     args = Parser.parse()
     modelname = 'destroyai'
-    datatype = 'legacy'
+    datatype = 'v2'
 
     # download current training datasets
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download tournament dataset")
-        napi.download_dataset()
-        
+        napi.download_dataset(datatype, 'tournament')
+
     # load data
     logger.info(f"Read tournament data")
-    dtour = Data.load_csv('tournament', args.test)
+    dtour = Data.load_parquet(datatype, 'live', args.test)
     dtour.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtour.df.shape} tournament")
 
     # load model from s3
-    load_model(modelname)
+    load_model(modelname, args.test)
     model = Destroyai(None, None, True)
 
     # compute predictions
@@ -62,7 +62,7 @@ def main():
     logger.info(f"Save predictions")
     Prediction(ids, yhat).save()
 
-    logger.info(f"Upload predictions")
+    logger.info(f"Upload predictions to {modelname}")
     napi.upload_predictions(modelname, datatype)
 
 
