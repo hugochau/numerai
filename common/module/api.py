@@ -95,9 +95,12 @@ class Api:
             'v4': 2
         }
 
+        # self.api.upload_predictions(f"{DATA_FOLDER}/predictions.csv",
+        #                             model_id=get_model_id(model_name),
+        #                             version=(version[data_type] or 2))
+
         self.api.upload_predictions(f"{DATA_FOLDER}/predictions.csv",
-                                    model_id=get_model_id(model_name),
-                                    version=(version[data_type] or 2))
+                                    model_id=get_model_id(model_name))
 
 
     # @log_item

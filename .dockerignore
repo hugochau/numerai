@@ -1,7 +1,11 @@
 .numerai
 .git
+
 data/numerai.zip
 data/predictions.csv
+
+data/model/*
+data/log/*
 
 data/numerai/v2/*
 data/numerai/v3/*

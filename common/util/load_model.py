@@ -9,6 +9,8 @@ __email__ = 'numerai_2021@protonmail.com'
 
 import re
 
+import botocore
+
 from common.module.aws import S3
 from common.module.logger import Logger
 from common.config.constant import S3_BUCKET
@@ -30,20 +32,30 @@ def load_model(model_name: str, test: str):
 
     # list bucket files
     bucket = 'numerai-model-staging' if test == '_test' else S3_BUCKET
-    files = sss.list_files(bucket)
+    # bucket = f'{S3_BUCKET}{test}'
+    filename = f'{model_name}.joblib'
+
+    try:
+        logger.info(f"Downloading {filename}")
+        sss.download_file(filename, bucket, 'model')
+
+    except botocore.exceptions.ClientError as e:
+        raise e
+
+    # files = sss.list_files(bucket)
 
     # check if there is a corresponding file for designated model
-    for file in files:
-        # if file['Key'].split('_')[0] == model_name:
-        if re.search(f'^{model_name}.*', file['Key']):
-            logger.info(f"Downloading {bucket}.{file['Key']}")
-            filename = file['Key']
-            sss.download_file(file['Key'], bucket, 'model')
+    # for file in files:
+    #     # if file['Key'].split('_')[0] == model_name:
+    #     if re.search(f'^{model_name}.*', file['Key']):
+    #         logger.info(f"Downloading {bucket}.{file['Key']}")
+    #         filename = file['Key']
+    #         sss.download_file(file['Key'], bucket, 'model')
 
-            # algo = file['Key'].split('_')[1].split('.')[0]
-            # algo = algo[0].upper() + algo[1:]
+    #         # algo = file['Key'].split('_')[1].split('.')[0]
+    #         # algo = algo[0].upper() + algo[1:]
 
-            # model = eval(algo)(None, None, True, file['Key'])
+    #         # model = eval(algo)(None, None, True, file['Key'])
 
     # return model
     return filename

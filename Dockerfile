@@ -3,7 +3,7 @@ FROM python:3.7-slim-buster
 
 WORKDIR /numerai
 # ADD ./modelname/requirements.txt /numerai/requirements.txt
-ADD ./goudale/requirements.txt /numerai/requirements.txt
+ADD ./destroyai/requirements.txt /numerai/requirements.txt
 
 RUN set -ex \
     && apt-get update \

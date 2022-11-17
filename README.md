@@ -38,9 +38,9 @@ Of course you need `numerai-cli` installed. As it should be included in your vir
 pipenv shell
 
 # install dependencies if not done already
-pip install -r requirements
+pip install -r requirements.txt
 # or
-pipenv install -r requirements
+pipenv install -r requirements.txt
 
 # update Dockerfile and entry.sh
 # check entry.sh inline doc for more details
