@@ -29,7 +29,7 @@ def load_model(model_name: str, test: str):
     bucket = 'numerai-model-staging' if test == '_test' else S3_BUCKET
     filename = f'{model_name}.joblib'
 
-    logger.info(f"Downloading {filename}")
+    logger.info(f"Downloading {bucket}/{filename}")
     sss.download_file(filename, bucket, 'model')
 
     return filename
