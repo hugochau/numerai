@@ -39,11 +39,11 @@ def main():
     # only when args.test is set to None
     if not args.test:
         logger.info(f"Download tournament dataset")
-        napi.download_dataset('v2', 'tournament')
+        napi.download_dataset(datatype, 'tournament')
         
     # load data
     logger.info(f"Read tournament data")
-    dtour = Data.load_parquet('v2', 'live', args.test)
+    dtour = Data.load_parquet(datatype, 'live', args.test)
     dtour.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtour.df.shape} tournament")
 
@@ -62,7 +62,7 @@ def main():
     logger.info(f"Save predictions")
     Prediction(ids, yhat).save()
 
-    logger.info(f"Upload predictions")
+    logger.info(f"Upload predictions to {modelname}")
     napi.upload_predictions(modelname, datatype)
 
 
