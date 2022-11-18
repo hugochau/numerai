@@ -55,7 +55,7 @@ def main():
     # save and upload model to s3
     logger.info(f"Save and upload model")
     save_model(model.model, modelname)
-    # S3().upload_file(modelname, args.test)
+    S3().upload_file(modelname, args.test)
 
 
 if __name__ == '__main__':
