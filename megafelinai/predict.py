@@ -32,7 +32,7 @@ def main():
 
     # parse CLI arg
     args = Parser.parse()
-    modelname = 'megafelinai_v2'
+    modelname = 'megafelinai'
     datatype = 'v3'
 
     # download current training datasets
@@ -43,7 +43,7 @@ def main():
 
     # load data
     logger.info(f"Read tournament data")
-    dtour = Data.load_parquet(datatype, 'tournament', args.test)
+    dtour = Data.load_parquet(datatype, 'live', args.test)
     dtour.df.info(memory_usage="deep")
     logger.info(f"Loaded {dtour.df.shape} tournament")
 
