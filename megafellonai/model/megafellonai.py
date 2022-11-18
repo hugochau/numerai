@@ -26,7 +26,7 @@ class MegaFellonai(Model):
     def fit(self, X, y, pre_trained):
         if pre_trained:
             # model = joblib.load(f'{DATA_FOLDER}/model/{type(self).__name__.lower()}.joblib')
-            model = joblib.load(f'{DATA_FOLDER}/model/megafellonai_v2.joblib')
+            model = joblib.load(f'{DATA_FOLDER}/model/megafellonai.joblib')
             return model
 
         # define the CatBoostClassifier model
