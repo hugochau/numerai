@@ -76,7 +76,7 @@ DFILES = {
     },
     'v3': {
         'tournament': {
-            'numerai_tournament_data_int8.parquet',
+            'numerai_live_data_int8.parquet',
             'features.json'
         },
         'training': {
@@ -103,7 +103,7 @@ ERA_COL = "era"
 DATA_TYPE_COL = "data_type"
 FEATURE_SIZE = 'medium'
 
-MACHINE_TYPE = 'GPU'
+MACHINE_TYPE = 'CPU'
 PLOT_TYPE = False
 
 SIGNAL_DATA_S3 = 'https://numerai-signals-public-data.s3-us-west-2.amazonaws.com'
